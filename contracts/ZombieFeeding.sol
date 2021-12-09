@@ -22,8 +22,21 @@ interface KittyInterface {
 contract ZombieFeeding is ZombieFactory {
 
   //Crypto kitties address
-  address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d;
-  KittyInterface kittyContract = KittyInterface(ckAddress);
+  // address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d;
+  // KittyInterface kittyContract = KittyInterface(ckAddress);
+  KittyInterface kittyContract;
+
+  function setKittyContractAddress(address _address) external onlyOwner {
+    kittyContract = KittyInterface(_address);
+  }
+
+  function _triggerCooldown(Zombie storage _zombie) internal {
+    _zombie.readyTime = uint32(block.timestamp + cooldownTime);
+  }
+
+  function _isReady(Zombie storage _zombie) internal view returns (bool) {
+    return (_zombie.readyTime <= block.timestamp);
+  }
 
   function feedAndMultiply(uint _zombieId, uint _targetDna, string memory _species) public payable {
     //make sure we are the owner of the zombie
