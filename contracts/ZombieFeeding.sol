@@ -43,6 +43,8 @@ contract ZombieFeeding is ZombieFactory {
     require(msg.sender == zombieToOwner[_zombieId]);
     // get the zombie locally
     Zombie storage myZombie = zombies[_zombieId];
+    //make sure the the cooldown is ok
+    require(_isReady(myZombie));
     //make sure that the DNA is not longer than 16 digits
     _targetDna = _targetDna % dnaModulus;
     // create a new DNA based on the target and the "current" zombie'DNA
@@ -56,6 +58,8 @@ contract ZombieFeeding is ZombieFactory {
 
     // create a new zombie
     _createZombie("NoName", newDna);
+
+    _triggerCooldown(myZombie);
   }
 
   function feedOnKitty(uint _zombieId, uint _kittyId) public {
