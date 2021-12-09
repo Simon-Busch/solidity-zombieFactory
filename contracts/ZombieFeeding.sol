@@ -1,6 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
-// pragma solidity >=0.5.0 <0.6.0;
+
 import "hardhat/console.sol";
 import "./ZombieFactory.sol";
 
@@ -25,7 +25,7 @@ contract ZombieFeeding is ZombieFactory {
   address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d;
   KittyInterface kittyContract = KittyInterface(ckAddress);
 
-  function feedAndMultiply(uint _zombieId, uint _targetDna) public view {
+  function feedAndMultiply(uint _zombieId, uint _targetDna, string memory _species) public payable {
     //make sure we are the owner of the zombie
     require(msg.sender == zombieToOwner[_zombieId]);
     // get the zombie locally
@@ -34,6 +34,13 @@ contract ZombieFeeding is ZombieFactory {
     _targetDna = _targetDna % dnaModulus;
     // create a new DNA based on the target and the "current" zombie'DNA
     uint newDna = (myZombie.dna + _targetDna) / 2;
+
+    //can't directly pass strings to keccak256
+    if (keccak256(abi.encodePacked(_species)) == keccak256(abi.encodePacked("kitty"))) {
+      newDna = newDna - newDna % 100 + 99;
+      //Assume newDna is 334455. Then newDna % 100 is 55, so newDna - newDna % 100 is 334400. Finally add 99 to get 334499.
+    }
+
     // create a new zombie
     _createZombie("NoName", newDna);
   }
@@ -43,7 +50,7 @@ contract ZombieFeeding is ZombieFactory {
     // assign the value of genes to kittyDna
     (,,,,,,,,,kittyDna) = kittyContract.getKitty(_kittyId);
     // And modify function call here:
-    feedAndMultiply(_zombieId, kittyDna);
+    feedAndMultiply(_zombieId, kittyDna, "kitty");
   }
 
 }
