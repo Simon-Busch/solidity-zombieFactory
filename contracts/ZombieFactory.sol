@@ -1,8 +1,11 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 import "hardhat/console.sol";
-import "./Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
+/// @title A basic implementation of CryptoZombies
+/// @author Simon Busch 🔥🔥🔥
+/// @dev Compliant with OpenZeppelin's implementation of the ERC721 spec draft
 contract ZombieFactory is Ownable {
 
     event NewZombie(uint zombieId, string name, uint dna);
@@ -23,8 +26,8 @@ contract ZombieFactory is Ownable {
 
     Zombie[] public zombies;
 
-    mapping (uint => address) public zombieToOwner;
-    mapping (address => uint) ownerZombieCount;
+    mapping (uint => address) public zombieToOwner; // who owns the zombie based in Id
+    mapping (address => uint) ownerZombieCount; // count # of zombie owned
 
     function _createZombie(string memory _name, uint _dna) internal {
         zombies.push(Zombie(_name, _dna, 1, uint32(block.timestamp + cooldownTime), 0,0));
