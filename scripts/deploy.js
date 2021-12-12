@@ -1,18 +1,10 @@
 const hre = require("hardhat");
 
 const main = async () => {
-  console.log("hello")
-  const [deployer] = await hre.ethers.getSigners();
-  const accountBalance = await deployer.getBalance();
-
-  console.log('Deploying contracts with account: ', deployer.address);
-  console.log('Account balance: ', accountBalance.toString());
-
-  const ZombieFactoryContract = await hre.ethers.getContractFactory('ZombieFactory');
-  const ZombieContract = await ZombieFactoryContract.deploy();
-  await ZombieContract.deployed();
-
-  console.log("Contract deployed to:", ZombieContract.address);
+  const ZombieFactory = await hre.ethers.getContractFactory("ZombieFactory");
+  const ZombieFactoryContract = await ZombieFactory.deploy();
+  await ZombieFactoryContract.deployed();
+  console.log("Contract ZombieFactoryContract deployed to:", ZombieFactoryContract.address);
 };
 
 const runMain = async () => {
